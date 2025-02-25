@@ -1,0 +1,292 @@
+{% extends 'gym_app/base.html' %} 
+{% load static %}
+
+{% block extra_css %}
+<style>
+    .auth-container {
+        min-height: calc(100vh - 200px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 0;
+    }
+
+    .card {
+        border: none;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .card-header {
+        background-color: var(--primary-bg);
+        color: var(--primary-accent);
+        padding: 1.5rem;
+    }
+
+    .form-control {
+        padding: 0.75rem 1rem;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary-accent);
+        box-shadow: 0 0 0 0.2rem rgba(255, 165, 0, 0.25);
+    }
+
+    .password-requirements {
+        background: rgba(0, 0, 0, 0.05);
+        border-radius: 8px;
+        padding: 1rem;
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .password-requirements h4 {
+        color: var(--primary-accent);
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .password-requirements ul {
+        list-style: none;
+        padding-left: 0;
+        margin-bottom: 0;
+    }
+
+    .password-requirements li {
+        margin-bottom: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .password-requirements li i {
+        color: #080808;
+        font-size: 0.8rem;
+    }
+
+    .password-requirements li.valid i {
+        color: #28a745;
+    }
+
+    #password-strength {
+        height: 5px;
+        background: #eee;
+        margin-top: 0.5rem;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+
+    #password-strength div {
+        height: 100%;
+        width: 0;
+        transition: width 0.3s ease;
+        border-radius: 5px;
+    }
+
+    .strength-weak { background-color: #dc3545; }
+    .strength-medium { background-color: var(--primary-accent); }
+    .strength-strong { background-color: #28a745; }
+
+    .btn-primary {
+        background-color: var(--primary-bg);
+        border-color: var(--primary-accent);
+        color: var(--primary-accent);
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: var(--primary-accent);
+        border-color: var(--primary-accent);
+        color: var(--primary-bg);
+    }
+
+    .invalid-feedback {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    .form-text {
+        color: #0d0d0e;
+        font-size: 0.875rem;
+    }
+
+    .login-link {
+        text-align: center;
+        margin-top: 1rem;
+        color: #6c757d;
+    }
+
+    .login-link a {
+        color: var(--primary-accent);
+        text-decoration: none;
+    }
+
+    .login-link a:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="text-center mb-0">Create Your Account</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" novalidate>
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="id_username" class="form-label">Username</label>
+                                    <input type="text" name="username" id="id_username" class="form-control {% if form.username.errors %}is-invalid{% endif %}" required>
+                                    {% if form.username.errors %}
+                                        <div class="invalid-feedback">{{ form.username.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="id_email" class="form-label">Email</label>
+                                    <input type="email" name="email" id="id_email" class="form-control {% if form.email.errors %}is-invalid{% endif %}" required>
+                                    {% if form.email.errors %}
+                                        <div class="invalid-feedback">{{ form.email.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="id_first_name" class="form-label">First Name</label>
+                                    <input type="text" name="first_name" id="id_first_name" class="form-control {% if form.first_name.errors %}is-invalid{% endif %}" required>
+                                    {% if form.first_name.errors %}
+                                        <div class="invalid-feedback">{{ form.first_name.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="id_last_name" class="form-label">Last Name</label>
+                                    <input type="text" name="last_name" id="id_last_name" class="form-control {% if form.last_name.errors %}is-invalid{% endif %}" required>
+                                    {% if form.last_name.errors %}
+                                        <div class="invalid-feedback">{{ form.last_name.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="id_phone_number" class="form-label">Phone Number</label>
+                                <input type="tel" name="phone_number" id="id_phone_number" class="form-control {% if form.phone_number.errors %}is-invalid{% endif %}" required>
+                                {% if form.phone_number.errors %}
+                                    <div class="invalid-feedback">{{ form.phone_number.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="id_password1" class="form-label">Password</label>
+                                <input type="password" name="password1" id="id_password1" class="form-control {% if form.password1.errors %}is-invalid{% endif %}" required>
+                                {% if form.password1.errors %}
+                                    <div class="invalid-feedback">{{ form.password1.errors.0 }}</div>
+                                {% endif %}
+                                <div class="password-requirements">
+                                    <h4>Password Requirements:</h4>
+                                    <ul>
+                                        <li id="length"><i class="fas fa-circle"></i> At least 8 characters long</li>
+                                        <li id="lowercase"><i class="fas fa-circle"></i> One lowercase letter</li>
+                                        <li id="uppercase"><i class="fas fa-circle"></i> One uppercase letter</li>
+                                        <li id="digit"><i class="fas fa-circle"></i> One number</li>
+                                        <li id="special"><i class="fas fa-circle"></i> One special character (!@#$%^&*(),.?":{}|<>)</li>
+                                    </ul>
+                                    <div id="password-strength">
+                                        <div></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="id_password2" class="form-label">Confirm Password</label>
+                                <input type="password" name="password2" id="id_password2" class="form-control {% if form.password2.errors %}is-invalid{% endif %}" required>
+                                {% if form.password2.errors %}
+                                    <div class="invalid-feedback">{{ form.password2.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-user-plus me-2"></i>Create Account
+                                </button>
+                            </div>
+                        </form>
+                        <div class="login-link">
+                            Already have an account? <a href="{% url 'user_login' %}">Login here</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const passwordInput = document.querySelector('input[name="password1"]');
+    const confirmInput = document.querySelector('input[name="password2"]');
+    if (!passwordInput) return;
+
+    const requirements = {
+        length: str => str.length >= 8,
+        lowercase: str => /[a-z]/.test(str),
+        uppercase: str => /[A-Z]/.test(str),
+        digit: str => /\d/.test(str),
+        special: str => /[!@#$%^&*(),.?":{}|<>]/.test(str)
+    };
+
+    const strengthBar = document.querySelector('#password-strength div');
+
+    passwordInput.addEventListener('input', function(e) {
+        const password = e.target.value;
+        let validCount = 0;
+
+        // Check each requirement
+        Object.entries(requirements).forEach(([key, validator]) => {
+            const isValid = validator(password);
+            const li = document.getElementById(key);
+            if (isValid) {
+                li.classList.add('valid');
+                li.querySelector('i').className = 'fas fa-check';
+                validCount++;
+            } else {
+                li.classList.remove('valid');
+                li.querySelector('i').className = 'fas fa-circle';
+            }
+        });
+
+        // Update strength bar
+        const strength = (validCount / Object.keys(requirements).length) * 100;
+        strengthBar.style.width = strength + '%';
+        strengthBar.className = '';
+        if (strength <= 40) strengthBar.classList.add('strength-weak');
+        else if (strength <= 80) strengthBar.classList.add('strength-medium');
+        else strengthBar.classList.add('strength-strong');
+    });
+
+    // Check if passwords match
+    confirmInput.addEventListener('input', function(e) {
+        if (passwordInput.value !== e.target.value) {
+            confirmInput.classList.add('is-invalid');
+            confirmInput.setCustomValidity('Passwords do not match');
+        } else {
+            confirmInput.classList.remove('is-invalid');
+            confirmInput.setCustomValidity('');
+        }
+    });
+});
+</script>
+{% endblock %}

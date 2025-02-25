@@ -1,0 +1,75 @@
+{% extends 'gym_app/base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="mb-0">Contact Us</h2>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5><i class="fas fa-map-marker-alt me-2"></i>Location</h5>
+                            <p>123 Fitness Street<br>Workout City, WC 12345</p>
+                            
+                            <h5><i class="fas fa-phone me-2"></i>Phone</h5>
+                            <p>(123) 456-7890</p>
+                            
+                            <h5><i class="fas fa-envelope me-2"></i>Email</h5>
+                            <p>info@gymmanagement.com</p>
+                            
+                            <h5><i class="fas fa-clock me-2"></i>Hours</h5>
+                            <p>Monday - Friday: 6:00 AM - 10:00 PM<br>
+                               Saturday - Sunday: 8:00 AM - 8:00 PM</p>
+                        </div>
+                        
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border: none;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-header {
+        background-color: var(--primary-bg);
+        color: var(--primary-accent);
+    }
+    
+    .fas {
+        color: var(--primary-accent);
+    }
+    
+    .form-control {
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        padding: 0.75rem 1rem;
+    }
+    
+    .form-control:focus {
+        border-color: var(--primary-accent);
+        box-shadow: 0 0 0 0.2rem rgba(255, 165, 0, 0.25);
+    }
+    
+    .btn-primary {
+        padding: 0.75rem 2rem;
+    }
+</style>
+{% endblock %}

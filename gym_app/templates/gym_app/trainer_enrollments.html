@@ -1,0 +1,205 @@
+{% extends 'gym_app/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="text-center mb-4">Package Enrollment Requests</h2>
+    
+    {% if messages %}
+    <div class="messages mb-4">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <ul class="nav nav-pills mb-4" id="enrollmentTabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="pending-tab" data-toggle="pill" href="#pending" role="tab">
+                                Pending Requests
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="approved-tab" data-toggle="pill" href="#approved" role="tab">
+                                Approved
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="rejected-tab" data-toggle="pill" href="#rejected" role="tab">
+                                Rejected
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <div class="tab-content" id="enrollmentTabContent">
+                        <!-- Pending Requests -->
+                        <div class="tab-pane fade show active" id="pending" role="tabpanel">
+                            {% with pending_enrollments=enrollments|filter_by_status:'pending' %}
+                            {% if pending_enrollments %}
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Member Name</th>
+                                            <th>Package</th>
+                                            <th>Enrollment Date</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for enrollment in pending_enrollments %}
+                                        <tr>
+                                            <td>{{ enrollment.user.get_full_name }}</td>
+                                            <td>{{ enrollment.package.name }}</td>
+                                            <td>{{ enrollment.enrollment_date|date:"F d, Y" }}</td>
+                                            <td>
+                                                <form method="post" action="{% url 'approve_enrollment' enrollment.id %}" class="d-inline">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-success btn-sm">
+                                                        Approve
+                                                    </button>
+                                                </form>
+                                                <form method="post" action="{% url 'reject_enrollment' enrollment.id %}" class="d-inline">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-danger btn-sm">
+                                                        Reject
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% else %}
+                            <p class="text-center">No pending enrollment requests.</p>
+                            {% endif %}
+                            {% endwith %}
+                        </div>
+                        
+                        <!-- Approved Enrollments -->
+                        <div class="tab-pane fade" id="approved" role="tabpanel">
+                            {% with approved_enrollments=enrollments|filter_by_status:'approved' %}
+                            {% if approved_enrollments %}
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Member Name</th>
+                                            <th>Package</th>
+                                            <th>Start Date</th>
+                                            <th>End Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for enrollment in approved_enrollments %}
+                                        <tr>
+                                            <td>{{ enrollment.user.get_full_name }}</td>
+                                            <td>{{ enrollment.package.name }}</td>
+                                            <td>{{ enrollment.start_date|date:"F d, Y" }}</td>
+                                            <td>{{ enrollment.end_date|date:"F d, Y" }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% else %}
+                            <p class="text-center">No approved enrollments.</p>
+                            {% endif %}
+                            {% endwith %}
+                        </div>
+                        
+                        <!-- Rejected Enrollments -->
+                        <div class="tab-pane fade" id="rejected" role="tabpanel">
+                            {% with rejected_enrollments=enrollments|filter_by_status:'rejected' %}
+                            {% if rejected_enrollments %}
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Member Name</th>
+                                            <th>Package</th>
+                                            <th>Enrollment Date</th>
+                                            <th>Notes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for enrollment in rejected_enrollments %}
+                                        <tr>
+                                            <td>{{ enrollment.user.get_full_name }}</td>
+                                            <td>{{ enrollment.package.name }}</td>
+                                            <td>{{ enrollment.enrollment_date|date:"F d, Y" }}</td>
+                                            <td>{{ enrollment.notes|default:"-" }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% else %}
+                            <p class="text-center">No rejected enrollments.</p>
+                            {% endif %}
+                            {% endwith %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .nav-pills .nav-link {
+        color: #333;
+        border-radius: 20px;
+        padding: 8px 20px;
+        margin: 0 5px;
+        transition: all 0.3s ease;
+    }
+    
+    .nav-pills .nav-link.active {
+        background: linear-gradient(135deg, #FFA500, #FFA500);
+        color: #000;
+    }
+    
+    .table {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    
+    .table thead th {
+        background: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+    }
+    
+    .btn-success, .btn-danger {
+        border-radius: 15px;
+        padding: 5px 15px;
+        margin: 0 2px;
+    }
+    
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+</style>
+
+{% block extra_js %}
+<script>
+    $(document).ready(function() {
+        // Initialize Bootstrap tabs
+        $('#enrollmentTabs a').on('click', function (e) {
+            e.preventDefault()
+            $(this).tab('show')
+        })
+    });
+</script>
+{% endblock %}
+{% endblock %}

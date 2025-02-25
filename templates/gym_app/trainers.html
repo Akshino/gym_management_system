@@ -1,0 +1,146 @@
+{% extends 'gym_app/base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="mb-0">Our Expert Trainers</h2>
+                </div>
+                <div class="card-body">
+                    <div class="row g-4">
+                        {% for trainer in trainers %}
+                        <div class="col-md-4">
+                            <div class="trainer-card">
+                                <div class="trainer-image">
+                                    {% if trainer.profile_picture %}
+                                        <img src="{{ trainer.profile_picture.url }}" alt="{{ trainer.user.get_full_name }}" class="trainer-img">
+                                    {% else %}
+                                        <div class="trainer-placeholder">
+                                            <i class="fas fa-user-circle"></i>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="trainer-info">
+                                    <h4>{{ trainer.user.get_full_name }}</h4>
+                                    <span class="badge specialization">{{ trainer.specialization.name }}</span>
+                                    <div class="trainer-details">
+                                        <p><i class="fas fa-star me-2"></i>{{ trainer.experience }} years experience</p>
+                                        <p><i class="fas fa-certificate me-2"></i>Certified Professional</p>
+                                        <p><i class="fas fa-users me-2"></i>{{ trainer.package_set.count }} Active Classes</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="col-12">
+                            <div class="alert alert-info">
+                                No trainers available at the moment.
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .trainer-card {
+        background-color: var(--secondary-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        transition: transform 0.3s ease;
+    }
+
+    .trainer-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .trainer-image {
+        height: 300px;
+        overflow: hidden;
+        background-color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+
+    .trainer-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center top;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    .trainer-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--primary-bg);
+    }
+
+    .trainer-placeholder i {
+        font-size: 5rem;
+        color: var(--secondary-bg);
+    }
+
+    .trainer-info {
+        padding: 1.5rem;
+    }
+
+    .trainer-info h4 {
+        color: var(--primary-white);
+        margin-bottom: 0.5rem;
+    }
+
+    .badge.specialization {
+        background-color: #060605;
+        color: var #ffffff;
+        font-size: 0.8rem;
+        padding: 0.5em 1em;
+        margin-bottom: 1rem;
+        display: inline-block;
+    }
+
+    .trainer-details {
+        margin-top: 1rem;
+    }
+
+    .trainer-details p {
+        margin-bottom: 0.5rem;
+        color: #000000;
+    }
+
+    .trainer-details i {
+        color: var(--primary-accent);
+    }
+
+    .card-header {
+        background-color: var(--primary-bg);
+        color: var(--primary-accent);
+        padding: 1.5rem;
+    }
+
+    .card {
+        border: none;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        background-color: #f59e07;
+    }
+
+    .alert-info {
+        background-color: var(--primary-bg);
+        color: var(--primary-accent);
+        border: 1px solid var(--primary-accent);
+    }
+</style>
+{% endblock %}

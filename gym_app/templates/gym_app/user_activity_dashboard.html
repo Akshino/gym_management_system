@@ -1,0 +1,382 @@
+{% extends 'gym_app/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --theme-yellow: #ff9d00;
+        --theme-dark: #000000;
+        --theme-gray: #fcc664;
+        --theme-white: #FFFFFF;
+        --theme-orange: #BE721B ;
+
+    }
+
+    .card {
+        background-color: var(--theme-gray);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border: none;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+        color: var(--theme-dark);
+    }
+    
+    .card-header {
+        background-color: var(--theme-dark) !important;
+        border-top-left-radius: 0.5rem !important;
+        border-top-right-radius: 0.5rem !important;
+        padding: 1rem;
+        color: var(--theme-white) !important;
+        font-weight: bold;
+    }
+    
+    .progress {
+        border-radius: 0.25rem;
+        background-color: var(--theme-dark);
+        height: 25px !important;
+    }
+    
+    .progress-bar {
+        background-color: var(--theme-yellow) !important;
+        color: var(--theme-dark) !important;
+        font-weight: bold;
+    }
+    
+    .table {
+        margin-bottom: 0;
+        color: var(--theme-dark);
+    }
+    
+    .badge {
+        padding: 0.5em 0.75em;
+    }
+    
+    .btn-success {
+        background-color: var(--theme-yellow) !important;
+        border-color: var(--theme-yellow) !important;
+        color: var(--theme-dark) !important;
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+
+    .btn-success:hover {
+        background-color: var(--theme-dark) !important;
+        border-color: var(--theme-yellow) !important;
+        color: var(--theme-yellow) !important;
+    }
+    
+    .alert {
+        margin-bottom: 0;
+    }
+
+    .alert-success {
+        background-color: var(--theme-yellow);
+        color: var(--theme-dark);
+        border: none;
+    }
+    
+    .table-responsive {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    .profile-info p {
+        margin-bottom: 0.5rem;
+        font-size: 0.99rem;
+        font-weight: bold;
+        color: var(--theme-dark);
+    }
+
+    .profile-info .btn {
+        width: 100%;
+        background-color: var(--theme-white);
+        color: var(--theme-dark);
+        font-weight: bold;
+    }
+
+    .profile-info .btn:hover {
+        background-color: var(--theme-dark);
+        color: var(--theme-yellow);
+        border-color: var(--theme-orange);
+    }
+
+    .trainer-img {
+        border: 3px solid var(--theme-yellow);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .trainer-placeholder {
+        border: 3px solid var(--theme-yellow);
+        background-color: var(--theme-dark);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .welcome-card {
+        background: linear-gradient(45deg, var(--theme-dark), var(--theme-dark)) !important;
+        border-left: 5px solid var(--theme-dark);
+    }
+
+    .welcome-card .card-title {
+        color: var(--theme-white);
+        font-weight: bold;
+    }
+
+    .welcome-card .card-text {
+        color: var(--theme-white);
+    }
+
+    .modal-content {
+        background-color: var(--theme-gray);
+        color: var(--theme-dark);
+    }
+
+    .modal-header {
+        border-bottom: 1px solid var(--theme-yellow);
+    }
+
+    .modal-footer {
+        border-top: 1px solid var(--theme-yellow);
+    }
+
+    @media (max-width: 768px) {
+        .col-md-4 {
+            margin-top: 1rem;
+        }
+    }
+    
+    .message {
+        margin-bottom: 10px;
+    }
+    .message-content {
+        display: inline-block;
+        padding: 8px 12px;
+        border-radius: 15px;
+    }
+    .sent .message-content {
+        background-color: #007bff;
+        color: white;
+        margin-left: auto;
+    }
+    .received .message-content {
+        background-color: #f8f9fa;
+    }
+    .message-time {
+        font-size: 0.75rem;
+        margin-top: 4px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Welcome Section -->
+    <div class="row mb-6">
+        <div class="col-md-8">
+            <div class="card welcome-card bg-primary text-white">
+                <div class="card-body">
+                    <h4 class="card-title">Welcome, {{ user.get_full_name }}</h4>
+                    <p class="card-text">Package: {{ active_enrollment.package.name }} ({{ active_enrollment.package.get_duration_display }})</p>
+                </div>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title"> {{ user.get_full_name }}'s notes</h4><br>
+                
+                    <a href="{% url 'notes_list' %}" class="btn btn-success btn-sm d-block text-center p-3 shadow-sm rounded">
+                       Go to Notes
+                    </a>
+                                    
+                
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Profile Details</h5>
+                    <div class="profile-info">
+                        <p><strong>Name:</strong> {{ user.get_full_name }}</p>
+                        <p><strong>Email:</strong> {{ user.email }}</p>
+                        <p><strong>Phone:</strong> {{ user.phone_number }}</p>
+                        <button class="btn btn-success mt-2" data-bs-toggle="modal" data-bs-target="#profileModal">
+                            <i class="fas fa-edit"></i> Edit Profile
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trainer Profile Section -->
+    <div class="row mb-4">
+        <div class="col-8">
+            <div class="trainer-section bg-dark text-white p-4 rounded">
+                <h2 class="mb-4">Your Trainer</h2>
+                <div class="trainer-info">
+                    <div class="d-flex align-items-center mb-3">
+                        {% if trainer_profile.profile_picture %}
+                            <img src="{{ trainer_profile.profile_picture.url }}" alt="Trainer" class="trainer-img me-3" style="width: 100px; height: 100px; border-radius: 50%;">
+                        {% else %}
+                            <img src="{% static 'img/default-profile.png' %}" alt="Default Profile" class="trainer-img me-3" style="width: 100px; height: 100px; border-radius: 50%;">
+                        {% endif %}
+                        <div>
+                            <h3 class="mb-2">{{ trainer_profile.user.get_full_name }}</h3>
+                            <p class="mb-2"><i class="fas fa-dumbbell me-2"></i>Specialization: {{ trainer_profile.specialization.name }}</p>
+                            <p class="mb-2"><i class="fas fa-star me-2"></i>Experience: {{ trainer_profile.experience }} years</p>
+                            <p class="mb-0"><i class="fas fa-phone me-2"></i>Contact: {{ trainer_profile.phone_number }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Attendance Marking -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">Today's Attendance</h5>
+                </div>
+                <div class="card-body text-center">
+                    {% if today_attendance %}
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle fa-2x"></i>
+                            <p class="mb-0">Attendance marked for today!</p>
+                            <small>Time: {{ today_attendance.time }}</small>
+                        </div>
+                    {% else %}
+                        <form method="post" action="{% url 'mark_attendance' %}" class="mt-3">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-check-circle"></i> Mark Attendance
+                            </button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-info text-white">
+                    <h5 class="card-title mb-0">Package Progress</h5>
+                </div>
+                <div class="card-body">
+                    <div class="progress-info mb-3">
+                        <span>Days Completed: {{ days_attended }} / {{ total_days }}</span>
+                        <div class="progress" style="height: 25px;">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" 
+                                 role="progressbar" 
+                                 style="width: {{ progress_percentage }}%"
+                                 aria-valuenow="{{ progress_percentage }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
+                                {{ progress_percentage }}%
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-muted">
+                        <small>Start Date: {{ active_enrollment.start_date|date:"M d, Y" }}</small><br>
+                        <small>End Date: {{ active_enrollment.end_date|date:"M d, Y" }}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Attendance History -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-warning d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Attendance History</h5>
+                    <a href="{% url 'download_attendance_pdf' %}" class="btn btn-sm btn-dark">
+                        <i class="fas fa-download"></i> Download PDF
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for attendance in attendance_history %}
+                                <tr>
+                                    <td>{{ attendance.date|date:"M d, Y" }}</td>
+                                    <td>{{ attendance.time|time:"h:i A" }}</td>
+                                    <td><span class="badge bg-success">Present</span></td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-center">No attendance records found</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment History -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Payment History</h5>
+                    <a href="{% url 'download_payment_pdf' %}" class="btn btn-sm btn-dark">
+                        <i class="fas fa-download"></i> Download PDF
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Package</th>
+                                    <th>Amount</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for payment in payment_history %}
+                                <tr>
+                                    <td>{{ payment.package.name }}</td>
+                                    <td>₹{{ payment.package.price }}</td>
+                                    <td>{{ payment.payment_date|date:"M d, Y" }}</td>
+                                    <td><span class="badge bg-success">Paid</span></td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center">No payment records found</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Profile Edit Modal -->
+<div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Form will be loaded here via AJAX -->
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% endblock %}
+{% endblock %}

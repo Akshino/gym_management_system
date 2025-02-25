@@ -1,0 +1,620 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static admin_list %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'admin/css/changelists.css' %}">
+<style>
+    /* Modern List View Styling */
+    #changelist {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    #changelist table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    #changelist table thead th {
+        background: #f8f9fa;
+        padding: 12px 16px;
+        font-weight: 600;
+        color: #333;
+        border-bottom: 2px solid #e0e0e0;
+        text-transform: uppercase;
+        font-size: 12px;
+        letter-spacing: 0.5px;
+    }
+
+    #changelist table tbody tr {
+        transition: all 0.3s;
+    }
+
+    #changelist table tbody tr:hover {
+        background-color: #f5f5f5;
+    }
+
+    #changelist table tbody td {
+        padding: 12px 16px;
+        border-bottom: 1px solid #e0e0e0;
+        color: #444;
+    }
+
+    #changelist table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    /* Action Buttons */
+    .addlink {
+        background: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 4px;
+        text-decoration: none;
+        display: inline-block;
+        margin-bottom: 20px;
+        transition: all 0.3s;
+    }
+
+    .addlink:hover {
+        background: #388E3C;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    /* Search Bar */
+    #searchbar {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+    }
+
+    #searchbar input[type="text"] {
+        width: 100%;
+        padding: 8px 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 4px;
+        font-size: 14px;
+        transition: all 0.3s;
+    }
+
+    #searchbar input[type="text"]:focus {
+        border-color: #4CAF50;
+        box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        outline: none;
+    }
+
+    /* Pagination */
+    .paginator {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .paginator a, .paginator span {
+        padding: 8px 12px;
+        margin: 0 4px;
+        border-radius: 4px;
+        color: #333;
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+
+    .paginator .this-page {
+        background: #4CAF50;
+        color: white;
+    }
+
+    .paginator a:hover {
+        background: #e0e0e0;
+    }
+
+    /* Status Indicators */
+    .status-active {
+        background: #E8F5E9;
+        color: #2E7D32;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .status-inactive {
+        background: #FFEBEE;
+        color: #C62828;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .content-wrapper {
+        display: flex;
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .package-list {
+        flex: 2;
+    }
+
+    .visualization-section {
+        flex: 1;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        min-width: 300px;
+    }
+
+    .chart-container {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .chart-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+
+    .stat-card {
+        background: #fff;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        transition: transform 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .stat-title {
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 5px;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #4CAF50;
+    }
+
+    .package-price-range {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 5px;
+        font-size: 0.85rem;
+        color: #666;
+    }
+
+    .package-list-container {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        margin: 20px 0;
+        overflow: hidden;
+    }
+
+    .results-header {
+        padding: 20px;
+        background: #f8f9fa;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .results-count {
+        font-size: 1.1rem;
+        color: #2c3e50;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .results-count i {
+        color: #4CAF50;
+    }
+
+    .results-table {
+        padding: 0;
+        overflow-x: auto;
+    }
+
+    #result_list {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #result_list thead th {
+        background: #f8f9fa;
+        padding: 15px 20px;
+        font-weight: 600;
+        color: #2c3e50;
+        text-align: left;
+        border-bottom: 2px solid #e0e0e0;
+        white-space: nowrap;
+    }
+
+    #result_list thead th i {
+        margin-right: 8px;
+        color: #4CAF50;
+    }
+
+    #result_list tbody tr {
+        transition: all 0.3s ease;
+    }
+
+    #result_list tbody tr:hover {
+        background-color: #f5f5f5;
+    }
+
+    #result_list tbody td {
+        padding: 15px 20px;
+        border-bottom: 1px solid #e0e0e0;
+        vertical-align: middle;
+    }
+
+    .package-name a {
+        color: #2196F3;
+        font-weight: 500;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .package-name a:hover {
+        color: #1976D2;
+    }
+
+    .trainer-details {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .trainer-name {
+        font-weight: 500;
+        color: #2c3e50;
+    }
+
+    .trainer-spec {
+        font-size: 0.85rem;
+        color: #666;
+        margin-top: 2px;
+    }
+
+    .duration-badge {
+        background: #E3F2FD;
+        color: #1976D2;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+    }
+
+    .price-amount {
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    .status-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .status-badge.active {
+        background: #E8F5E9;
+        color: #2E7D32;
+    }
+
+    .status-badge.inactive {
+        background: #FFEBEE;
+        color: #C62828;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+    }
+
+    .btn-action {
+        width: 32px;
+        height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+        color: white;
+    }
+
+    .btn-action.edit {
+        background: #2196F3;
+    }
+
+    .btn-action.edit:hover {
+        background: #1976D2;
+    }
+
+    .btn-action.delete {
+        background: #F44336;
+    }
+
+    .btn-action.delete:hover {
+        background: #D32F2F;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1024px) {
+        .results-table {
+            margin: 0 -15px;
+        }
+        
+        #result_list td {
+            padding: 12px 15px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .trainer-details {
+            white-space: normal;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+            gap: 4px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    {% block object-tools %}
+        <ul class="object-tools">
+            {% block object-tools-items %}
+                {% if has_add_permission %}
+                    <li>
+                        <a href="{% url 'admin:gym_app_package_add' %}" class="addlink">
+                            <i class="fas fa-plus"></i> Add {{ cl.opts.verbose_name }}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endblock %}
+        </ul>
+    {% endblock %}
+
+    <div class="content-wrapper">
+        <div class="package-list">
+            {% block result_list %}
+                {% if action_form and actions_on_top and cl.show_admin_actions %}{% admin_actions %}{% endif %}
+                <div class="package-list-container">
+                    <div class="results-header">
+                        <div class="results-count">
+                            <i class="fas fa-box-open"></i>
+                            <span>{{ cl.result_count }} {% if cl.result_count == 1 %}{{ cl.opts.verbose_name }}{% else %}{{ cl.opts.verbose_name_plural }}{% endif %} found</span>
+                        </div>
+                    </div>
+                    <div class="results-table">
+                        <table id="result_list">
+                            <thead>
+                                <tr>
+                                    <th><i class="fas fa-tag"></i> Name</th>
+                                    <th><i class="fas fa-user-tie"></i> Trainer</th>
+                                    <th><i class="fas fa-clock"></i> Duration</th>
+                                    <th><i class="fas fa-dollar-sign"></i> Price</th>
+                                    <th><i class="fas fa-toggle-on"></i> Status</th>
+                                    <th><i class="fas fa-cogs"></i> Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for result in cl.result_list %}
+                                    <tr class="{% cycle 'row1' 'row2' %}">
+                                        <td class="package-name">
+                                            <a href="{% url 'admin:gym_app_package_change' result.id %}">{{ result.name }}</a>
+                                        </td>
+                                        <td class="trainer-info">
+                                            <div class="trainer-details">
+                                                <span class="trainer-name">{{ result.trainer.user.get_full_name }}</span>
+                                                <span class="trainer-spec">{{ result.trainer.specialization }}</span>
+                                            </div>
+                                        </td>
+                                        <td class="duration">
+                                            <span class="duration-badge">{{ result.duration }} months</span>
+                                        </td>
+                                        <td class="price">
+                                            <span class="price-amount">₹{{ result.price }}</span>
+                                        </td>
+                                        <td class="status">
+                                            {% if result.is_active %}
+                                                <span class="status-badge active">
+                                                    <i class="fas fa-check-circle"></i> Active
+                                                </span>
+                                            {% else %}
+                                                <span class="status-badge inactive">
+                                                    <i class="fas fa-times-circle"></i> Inactive
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="actions">
+                                            <div class="action-buttons">
+                                                <a href="{% url 'admin:gym_app_package_change' result.id %}" 
+                                                   class="btn-action edit" 
+                                                   title="Edit Package">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="{% url 'admin:gym_app_package_delete' result.id %}" 
+                                                   class="btn-action delete" 
+                                                   title="Delete Package">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% endblock %}
+        </div>
+
+        <div class="visualization-section">
+            <div class="chart-container">
+                <h3 class="chart-title">Package Duration Distribution</h3>
+                <canvas id="durationChart"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <h3 class="chart-title">Price Range Distribution</h3>
+                <canvas id="priceChart"></canvas>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-title">Total Packages</div>
+                <div class="stat-value" id="totalPackages">0</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-title">Average Package Price</div>
+                <div class="stat-value" id="avgPrice">₹0</div>
+                <div class="package-price-range">
+                    <span id="minPrice">Min: ₹0</span>
+                    <span id="maxPrice">Max: ₹0</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-title">Most Popular Duration</div>
+                <div class="stat-value" id="popularDuration">0 months</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Collect data from package list
+    const packages = Array.from(document.querySelectorAll('tbody tr'));
+    const durations = {};
+    const prices = [];
+    let totalPrice = 0;
+
+    packages.forEach(pkg => {
+        const cells = pkg.querySelectorAll('td');
+        if (cells.length >= 2) {
+            const duration = cells[2].textContent.trim();
+            const price = parseFloat(cells[3].textContent.replace('₹', '').replace(',', ''));
+            
+            durations[duration] = (durations[duration] || 0) + 1;
+            if (!isNaN(price)) {
+                prices.push(price);
+                totalPrice += price;
+            }
+        }
+    });
+
+    // Update statistics
+    document.getElementById('totalPackages').textContent = packages.length;
+    
+    if (prices.length > 0) {
+        const avgPrice = totalPrice / prices.length;
+        const minPrice = Math.min(...prices);
+        const maxPrice = Math.max(...prices);
+        
+        document.getElementById('avgPrice').textContent = '₹' + avgPrice.toFixed(2);
+        document.getElementById('minPrice').textContent = 'Min: ₹' + minPrice;
+        document.getElementById('maxPrice').textContent = 'Max: ₹' + maxPrice;
+    }
+
+    if (Object.keys(durations).length > 0) {
+        const popularDuration = Object.entries(durations).reduce((a, b) => b[1] > a[1] ? b : a)[0];
+        document.getElementById('popularDuration').textContent = popularDuration;
+    }
+
+    // Duration Chart
+    new Chart(document.getElementById('durationChart'), {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(durations),
+            datasets: [{
+                data: Object.values(durations),
+                backgroundColor: [
+                    '#4CAF50',
+                    '#2196F3',
+                    '#FFC107',
+                    '#9C27B0',
+                    '#F44336'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+
+    // Price Range Chart
+    const priceRanges = {
+        '0-1000': 0,
+        '1001-2000': 0,
+        '2001-5000': 0,
+        '5001+': 0
+    };
+
+    prices.forEach(price => {
+        if (price <= 1000) priceRanges['0-1000']++;
+        else if (price <= 2000) priceRanges['1001-2000']++;
+        else if (price <= 5000) priceRanges['2001-5000']++;
+        else priceRanges['5001+']++;
+    });
+
+    new Chart(document.getElementById('priceChart'), {
+        type: 'bar',
+        data: {
+            labels: Object.keys(priceRanges),
+            datasets: [{
+                label: 'Number of Packages',
+                data: Object.values(priceRanges),
+                backgroundColor: '#4CAF50'
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

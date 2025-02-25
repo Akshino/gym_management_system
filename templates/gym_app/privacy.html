@@ -1,0 +1,116 @@
+{% extends 'gym_app/base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="mb-0">Privacy Policy</h2>
+                </div>
+                <div class="card-body">
+                    <p class="lead mb-4">This Privacy Policy describes how your personal information is collected, used, and shared when you use our Gym Management System.</p>
+
+                    <div class="mb-4">
+                        <h5>Information We Collect</h5>
+                        <p>When you register with our system, we collect the following information:</p>
+                        <ul>
+                            <li>Name and contact information</li>
+                            <li>Email address</li>
+                            <li>Phone number</li>
+                            <li>Emergency contact details</li>
+                            <li>Fitness goals and health information</li>
+                            <li>Payment information</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5>How We Use Your Information</h5>
+                        <p>We use the information we collect to:</p>
+                        <ul>
+                            <li>Process your membership and payments</li>
+                            <li>Communicate with you about your training schedule</li>
+                            <li>Track your fitness progress</li>
+                            <li>Provide personalized training recommendations</li>
+                            <li>Send you important updates about our services</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5>Information Sharing</h5>
+                        <p>We do not sell or share your personal information with third parties except:</p>
+                        <ul>
+                            <li>With your assigned trainer for training purposes</li>
+                            <li>When required by law</li>
+                            <li>With your explicit consent</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5>Data Security</h5>
+                        <p>We implement appropriate security measures to protect your personal information, including:</p>
+                        <ul>
+                            <li>Encryption of sensitive data</li>
+                            <li>Regular security assessments</li>
+                            <li>Access controls and authentication</li>
+                            <li>Secure data storage</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5>Your Rights</h5>
+                        <p>You have the right to:</p>
+                        <ul>
+                            <li>Access your personal information</li>
+                            <li>Correct inaccurate information</li>
+                            <li>Request deletion of your information</li>
+                            <li>Opt-out of marketing communications</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5>Contact Us</h5>
+                        <p>If you have any questions about this Privacy Policy, please contact us:</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-envelope me-2"></i>Email: privacy@gymmanagement.com</li>
+                            <li><i class="fas fa-phone me-2"></i>Phone: (123) 456-7890</li>
+                        </ul>
+                    </div>
+
+                    <div class="text-muted mt-4">
+                        <small>Last updated: {% now "F d, Y" %}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border: none;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-header {
+        background-color: var(--primary-bg);
+        color: var(--primary-accent);
+    }
+    
+    .fas {
+        color: var(--primary-accent);
+    }
+    
+    ul:not(.list-unstyled) {
+        padding-left: 1.5rem;
+    }
+    
+    ul:not(.list-unstyled) li {
+        margin-bottom: 0.5rem;
+    }
+    
+    .list-unstyled li {
+        margin-bottom: 0.5rem;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,119 @@
+:root {
+    --primary-color: #8ee622;
+    --secondary-color: #3498db;
+    --accent-color: #e74c3c;
+    --text-color: #2c3e50;
+    --background-light: #f8f9fa;
+}
+
+/* General Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+#header {
+    background: var(--primary-color);
+    color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#branding h1 {
+    font-weight: 600;
+}
+
+#branding h1 a {
+    color: white;
+}
+
+.module h2, .module caption, .inline-group h2 {
+    background: var(--secondary-color);
+    color: white;
+    padding: 12px;
+    border-radius: 4px 4px 0 0;
+}
+
+/* Dashboard Customization */
+.dashboard #content {
+    width: 100%;
+}
+
+.dashboard .module table th,
+.dashboard .module table td {
+    padding: 12px;
+}
+
+/* Form Styling */
+.form-row {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.submit-row {
+    background: var(--background-light);
+    padding: 15px;
+}
+
+.button, input[type=submit], input[type=button], .submit-row input {
+    background: var(--secondary-color);
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.button:hover, input[type=submit]:hover, input[type=button]:hover, .submit-row input:hover {
+    background: #2980b9;
+}
+
+.button.default {
+    background: var(--accent-color);
+}
+
+/* List View Improvements */
+#changelist table {
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+#changelist table thead th {
+    background: var(--primary-color);
+    color: white;
+    padding: 12px;
+}
+
+#changelist table tbody tr:nth-child(even) {
+    background-color: var(--background-light);
+}
+
+/* Message Styling */
+.messagelist {
+    padding: 0;
+}
+
+.messagelist li {
+    padding: 12px 15px;
+    margin: 0 0 10px 0;
+    border-radius: 4px;
+}
+
+/* Custom Dashboard Widgets */
+.dashboard .module {
+    background: white;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+}
+
+/* Footer Styling */
+.footer {
+    text-align: center;
+    padding: 20px;
+    background: var(--primary-color);
+    color: white;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}

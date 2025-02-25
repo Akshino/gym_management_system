@@ -1,0 +1,25 @@
+{% extends 'admin/base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} | FitLife Gym Management{% endblock %}
+
+{% block extrastyle %}
+<link rel="stylesheet" href="{% static 'admin/css/custom_admin.css' %}">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}">
+        FitLife Gym Management
+    </a>
+</h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+{% block footer %}
+<div class="footer">
+    <p>&copy; 2025 FitLife Gym Management System. All rights reserved.</p>
+</div>
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends 'gym_app/base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="mb-0">About Us</h2>
+                </div>
+                <div class="card-body">
+                    <h4 class="mb-4">Welcome to Our Gym Management System</h4>
+                    
+                    <p class="lead">We are dedicated to providing a comprehensive fitness experience through our state-of-the-art facilities and expert trainers.</p>
+                    
+                    <div class="mb-4">
+                        <h5>Our Mission</h5>
+                        <p>To empower individuals in their fitness journey by providing personalized training programs, expert guidance, and a supportive community environment.</p>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h5>What We Offer</h5>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check me-2"></i>Personalized training programs</li>
+                            <li><i class="fas fa-check me-2"></i>Expert certified trainers</li>
+                            <li><i class="fas fa-check me-2"></i>Modern equipment and facilities</li>
+                            <li><i class="fas fa-check me-2"></i>Flexible scheduling</li>
+                            <li><i class="fas fa-check me-2"></i>Progress tracking</li>
+                            <li><i class="fas fa-check me-2"></i>Nutritional guidance</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h5>Why Choose Us?</h5>
+                        <p>Our gym management system offers a unique blend of technology and personal attention. We understand that every individual's fitness journey is different, which is why we provide:</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-star me-2"></i>Customized workout plans</li>
+                            <li><i class="fas fa-star me-2"></i>Regular progress monitoring</li>
+                            <li><i class="fas fa-star me-2"></i>Supportive community</li>
+                            <li><i class="fas fa-star me-2"></i>Flexible membership options</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <a href="{% url 'packages' %}" class="btn btn-primary me-2">View Our Packages</a>
+                        <a href="{% url 'contact' %}" class="btn btn-primary">Contact Us</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border: none;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-header {
+        background-color: var(--primary-bg);
+        color: var(--primary-accent);
+    }
+    
+    .fas {
+        color: var(--primary-accent);
+    }
+    
+    .list-unstyled li {
+        margin-bottom: 0.5rem;
+        padding-left: 1.5rem;
+        position: relative;
+    }
+    
+    .list-unstyled .fas {
+        position: absolute;
+        left: 0;
+        top: 0.25rem;
+    }
+</style>
+{% endblock %}

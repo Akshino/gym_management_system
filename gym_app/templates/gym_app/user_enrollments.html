@@ -1,0 +1,122 @@
+{% extends 'gym_app/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="text-center mb-4">My Package Enrollments</h2>
+    
+    {% if messages %}
+    <div class="messages mb-4">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <div class="row">
+        {% for enrollment in enrollments %}
+        <div class="col-md-6 mb-4">
+            <div class="card enrollment-card">
+                <div class="card-header">
+                    <h3 class="package-name">{{ enrollment.package.name }}</h3>
+                    <span class="badge {% if enrollment.status == 'approved' %}badge-success{% elif enrollment.status == 'rejected' %}badge-danger{% else %}badge-warning{% endif %}">
+                        {{ enrollment.get_status_display }}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="enrollment-details">
+                        <p><strong>Trainer:</strong> {{ enrollment.package.trainer.user.get_full_name }}</p>
+                        <p><strong>Duration:</strong> {{ enrollment.package.get_duration_display }}</p>
+                        <p><strong>Price:</strong> ₹{{ enrollment.package.price }}</p>
+                        <p><strong>Enrollment Date:</strong> {{ enrollment.enrollment_date|date:"F d, Y" }}</p>
+                        {% if enrollment.start_date %}
+                        <p><strong>Start Date:</strong> {{ enrollment.start_date|date:"F d, Y" }}</p>
+                        {% endif %}
+                        {% if enrollment.end_date %}
+                        <p><strong>End Date:</strong> {{ enrollment.end_date|date:"F d, Y" }}</p>
+                        {% endif %}
+                    </div>
+                    {% if enrollment.notes %}
+                    <div class="notes mt-3">
+                        <h5>Notes:</h5>
+                        <p>{{ enrollment.notes }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center">
+            <p>You haven't enrolled in any packages yet.</p>
+            <a href="{% url 'package_list' %}" class="btn btn-gradient mt-3">View Available Packages</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .enrollment-card {
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .card-header {
+        background: linear-gradient(135deg, #FFA500, #FFA500);
+        color: #000;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .package-name {
+        margin: 0;
+        font-size: 1.3rem;
+        font-weight: 600;
+    }
+    
+    .badge {
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+    }
+    
+    .badge-success {
+        background-color: #28a745;
+        color: white;
+    }
+    
+    .badge-warning {
+        background-color: #ffc107;
+        color: #000;
+    }
+    
+    .badge-danger {
+        background-color: #dc3545;
+        color: white;
+    }
+    
+    .enrollment-details p {
+        margin-bottom: 10px;
+    }
+    
+    .btn-gradient {
+        background: linear-gradient(135deg, #FFA500, #FFA500);
+        border: none;
+        color: #000;
+        font-weight: 500;
+        padding: 10px 30px;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        background: linear-gradient(135deg, #FFA500, #FFA500);
+    }
+</style>
+{% endblock %}

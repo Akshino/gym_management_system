@@ -1,0 +1,109 @@
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.stat-box {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.stat-box h3 {
+    color: var(--primary-color);
+    margin: 0 0 10px 0;
+    font-size: 1.1em;
+}
+
+.stat-box p {
+    color: var(--secondary-color);
+    font-size: 2em;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* Recent Actions Styling */
+.actionlist {
+    padding: 0;
+}
+
+.actionlist li {
+    padding: 8px 12px;
+    border-bottom: 1px solid #eee;
+    list-style-type: none;
+}
+
+.actionlist li:last-child {
+    border-bottom: none;
+}
+
+.addlink {
+    color: #27ae60;
+}
+
+.changelink {
+    color: #f39c12;
+}
+
+.deletelink {
+    color: #e74c3c;
+}
+
+/* Module Styling */
+.module {
+    margin-bottom: 20px;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.module h2 {
+    margin: 0;
+    padding: 15px;
+    background: var(--primary-color);
+    color: white;
+}
+
+/* Table Styling */
+.module table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.module table th,
+.module table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.module table th {
+    text-align: left;
+    font-weight: 500;
+}
+
+/* Link Styling */
+.module a {
+    color: var(--secondary-color);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.module a:hover {
+    color: var(--primary-color);
+}
+
+/* Responsive Design */
+@media (max-width: 767px) {
+    .stats-container {
+        grid-template-columns: 1fr;
+    }
+    
+    #content-related {
+        margin-top: 20px;
+    }
+}
