@@ -4,3 +4,4 @@ reportlab
 Pillow
 django-crispy-forms
 python-dotenv
+gunicorn
