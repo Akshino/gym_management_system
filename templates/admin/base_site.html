@@ -1,0 +1,146 @@
+{% extends 'admin/base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} | FitLife Gym Management{% endblock %}
+
+{% block extrastyle %}{{ block.super }}
+<link rel="stylesheet" href="{% static 'admin/css/custom_admin.css' %}">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+    .logout-btn {
+        background: linear-gradient(135deg, #FFA500, #FFA500);
+        color: #000 !important;
+        padding: 8px 20px;
+        border: none;
+        border-radius: 5px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-block;
+        margin-left: 15px;
+    }
+
+    .logout-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        background: linear-gradient(135deg, #FFA500, #FFA500);
+        color: #000 !important;
+        text-decoration: none;
+    }
+
+    #user-tools {
+        position: absolute;
+        top: 20px;
+        right: 40px;
+        font-size: 13px;
+        padding: 0;
+        margin: 0;
+        font-weight: 300;
+        color: #fff;
+        background: transparent;
+        border: none;
+    }
+
+    .sidebar-logout {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        width: calc(100% - 40px);
+        max-width: 200px;
+        text-align: center;
+    }
+
+    .sidebar-logout a {
+        display: block;
+        background: linear-gradient(135deg, #FFA500, #FFA500);
+        color: #000 !important;
+        padding: 12px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .sidebar-logout a:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        background: linear-gradient(135deg, #FFA500, #FFA500);
+    }
+
+    /* Style for the sidebar menu items */
+    .app-gym_app.module {
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 15px !important;
+    }
+
+    .app-gym_app.module h2, 
+    .app-gym_app.module caption {
+        background: linear-gradient(135deg, #FFA500, #3ef7a4) !important;
+        color: #000 !important;
+    }
+
+    .app-gym_app.module a {
+        color: #333;
+    }
+
+    /* Make room for logout button */
+    #nav-sidebar {
+        padding-bottom: 80px !important;
+    }
+</style>
+{% endblock %}
+
+{% block usertools %}
+{% if user.is_authenticated %}
+<div id="user-tools">
+    {% block welcome-msg %}
+        Welcome,
+        <strong>{% firstof user.get_short_name user.get_username %}</strong>.
+    {% endblock %}
+    {% block userlinks %}
+        {% if site_url %}
+            <a href="{{ site_url }}">View Site</a> /
+        {% endif %}
+        {% if user.is_active and user.is_staff %}
+            {% url 'django-admindocs-docroot' as docsroot %}
+            {% if docsroot %}
+                <a href="{{ docsroot }}">Documentation</a> /
+            {% endif %}
+        {% endif %}
+        {% if user.has_usable_password %}
+            <a href="{% url 'admin:password_change' %}">Change password</a> /
+        {% endif %}
+        <a href="{% url 'trainer_logout' %}">
+            <i class="fas fa-sign-out-alt"></i>Log out</a>
+    {% endblock %}
+</div>
+{% endif %}
+{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}">
+        FitLife Gym Management
+    </a>
+</h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+{% block nav-sidebar %}
+{{ block.super }}
+{% if user.is_authenticated %}
+<div class="sidebar-logout">
+    <a href="{% url 'admin:logout' %}">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </a>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block footer %}
+<div class="footer">
+    <p>&copy; 2025 FitLife Gym Management System. All rights reserved.</p>
+</div>
+{% endblock %}

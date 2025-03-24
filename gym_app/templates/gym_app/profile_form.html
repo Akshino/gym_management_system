@@ -1,0 +1,100 @@
+{% load static %}
+<form method="post" action="{% url 'update_profile' %}" class="profile-form" id="profileUpdateForm">
+    {% csrf_token %}
+    <div class="modal-header">
+        <h5 class="modal-title" id="profileModalLabel">
+            <i class="fas fa-user-edit me-2"></i>
+            Edit Profile
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <div class="mb-3">
+            <label for="id_first_name" class="form-label">
+                <i class="fas fa-user me-2"></i>First Name
+            </label>
+            <input type="text" name="first_name" id="id_first_name" class="form-control" value="{{ user.first_name }}" required>
+            {% if form.first_name.errors %}
+            <div class="invalid-feedback d-block">{{ form.first_name.errors.0 }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="mb-3">
+            <label for="id_last_name" class="form-label">
+                <i class="fas fa-user me-2"></i>Last Name
+            </label>
+            <input type="text" name="last_name" id="id_last_name" class="form-control" value="{{ user.last_name }}" required>
+            {% if form.last_name.errors %}
+            <div class="invalid-feedback d-block">{{ form.last_name.errors.0 }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="mb-3">
+            <label for="id_email" class="form-label">
+                <i class="fas fa-envelope me-2"></i>Email
+            </label>
+            <input type="email" name="email" id="id_email" class="form-control" value="{{ user.email }}" required>
+            {% if form.email.errors %}
+            <div class="invalid-feedback d-block">{{ form.email.errors.0 }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="mb-3">
+            <label for="id_phone_number" class="form-label">
+                <i class="fas fa-phone me-2"></i>Phone Number
+            </label>
+            <input type="text" name="phone_number" id="id_phone_number" class="form-control" value="{{ user.phone_number }}" required>
+            {% if form.phone_number.errors %}
+            <div class="invalid-feedback d-block">{{ form.phone_number.errors.0 }}</div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn-modern btn-secondary" data-bs-dismiss="modal">
+            <i class="fas fa-times me-2"></i>Close
+        </button>
+        <button type="submit" class="btn-modern">
+            <i class="fas fa-save me-2"></i>Save Changes
+        </button>
+    </div>
+</form>
+
+<style>
+    .profile-form .form-control {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .profile-form .form-control:focus {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: var(--gradient-success);
+        box-shadow: 0 0 0 0.25rem rgba(0, 205, 172, 0.25);
+    }
+
+    .profile-form .form-label {
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .profile-form .btn-modern {
+        background: var(--gradient-success);
+        color: white;
+        border: none;
+    }
+
+    .profile-form .btn-modern.btn-secondary {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .profile-form .invalid-feedback {
+        color: #ff6b6b;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    .profile-form .form-control.is-invalid {
+        border-color: #ff6b6b;
+        background-image: none;
+    }
+</style>

@@ -1,0 +1,144 @@
+{% extends 'gym_app/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="text-center mb-4">Available Packages</h2>
+    
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <div class="row">
+        {% for package in packages %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 package-card">
+                <div class="card-header text-center">
+                    <h3 class="package-name">{{ package.name }}</h3>
+                    <h4 class="package-price">₹{{ package.price }}</h4>
+                    <p class="package-duration">{{ package.get_duration_display }}</p>
+                </div>
+                <div class="card-body">
+                    <p class="trainer-name">Trainer: {{ package.trainer.user.get_full_name }}</p>
+                    <p class="package-description">{{ package.description }}</p>
+                    <div class="features">
+                        <h5>Features:</h5>
+                        <ul>
+                            {% for feature in package.features.split|slice:":5" %}
+                            <li>{{ feature }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="card-footer text-center">
+                    {% if user.is_authenticated %}
+                        {% with enrollment=user_enrollments|filter_by_package:package %}
+                            {% if enrollment %}
+                                <button class="btn btn-secondary" disabled>
+                                    {{ enrollment.get_status_display }}
+                                </button>
+                            {% else %}
+                                <form method="post" action="{% url 'enroll_package' package.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-gradient">Enroll Now</button>
+                                </form>
+                            {% endif %}
+                        {% endwith %}
+                    {% else %}
+                        <a href="{% url 'user_login' %}?next={% url 'package_list' %}" class="btn btn-gradient">
+                            Login to Enroll
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center">
+            <p>No packages available at the moment.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .package-card {
+        border-radius: 15px;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .package-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .card-header {
+        background: linear-gradient(135deg, #FFA500, #FFA500);
+        color: #000;
+        padding: 20px;
+    }
+    
+    .package-name {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+    
+    .package-price {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+    
+    .package-duration {
+        font-size: 1rem;
+        opacity: 0.8;
+    }
+    
+    .trainer-name {
+        font-weight: 500;
+        color: #666;
+    }
+    
+    .features ul {
+        list-style: none;
+        padding-left: 0;
+    }
+    
+    .features li {
+        padding: 5px 0;
+        position: relative;
+        padding-left: 25px;
+    }
+    
+    .features li:before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: #3ef7a4;
+        font-weight: bold;
+    }
+    
+    .btn-gradient {
+        background: linear-gradient(135deg, #FFA500, #FFA500);
+        border: none;
+        color: #000;
+        font-weight: 500;
+        padding: 10px 30px;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        background: linear-gradient(135deg, #FFA500, #FFA500);
+    }
+</style>
+{% endblock %}

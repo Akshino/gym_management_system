@@ -1,0 +1,104 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls static admin_modify %}
+
+{% block extrahead %}
+{{ block.super }}
+<style>
+    /* Form styling */
+    .form-row {
+        padding: 15px 0;
+        border-bottom: 1px solid #eee;
+    }
+
+    .form-row:last-child {
+        border-bottom: none;
+    }
+
+    .form-row label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #333;
+    }
+
+    .form-row input[type="text"],
+    .form-row textarea {
+        width: 100%;
+        padding: 8px 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 4px;
+        font-size: 14px;
+        transition: all 0.3s;
+    }
+
+    .form-row input[type="text"]:focus,
+    .form-row textarea:focus {
+        border-color: #4CAF50;
+        box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        outline: none;
+    }
+
+    /* Submit row styling */
+    .submit-row {
+        padding: 12px 14px;
+        background: #f8f9fa;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin: 20px 0;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    .submit-row input[type="submit"] {
+        background: #4CAF50;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-right: 10px;
+        font-weight: 600;
+    }
+
+    .submit-row input[type="submit"]:hover {
+        background: #45a049;
+    }
+
+    .submit-row input[type="submit"].default {
+        background: #2196F3;
+    }
+
+    .submit-row input[type="submit"].default:hover {
+        background: #1976D2;
+    }
+
+    .submit-row .deletelink {
+        background: #f44336;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 4px;
+        text-decoration: none;
+        margin-left: auto;
+    }
+
+    .submit-row .deletelink:hover {
+        background: #d32f2f;
+    }
+</style>
+{% endblock %}
+
+{% block submit_buttons_bottom %}
+<div class="submit-row">
+    <input type="submit" value="{% translate 'Save' %}" class="default" name="_save">
+    {% if show_save_and_add_another %}
+        <input type="submit" value="{% translate 'Save and add another' %}" name="_addanother">
+    {% endif %}
+    {% if show_save_and_continue %}
+        <input type="submit" value="{% translate 'Save and continue editing' %}" name="_continue">
+    {% endif %}
+    {% if show_delete_link %}
+        <a href="{% url opts|admin_urlname:'delete' original.pk|admin_urlquote %}" class="deletelink">{% translate "Delete" %}</a>
+    {% endif %}
+</div>
+{% endblock %}

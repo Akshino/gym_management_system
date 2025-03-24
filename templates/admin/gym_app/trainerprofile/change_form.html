@@ -1,0 +1,177 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls static admin_modify %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    .form-row {
+        padding: 15px 0;
+        border-bottom: 1px solid #eee;
+    }
+
+    .form-row:last-child {
+        border-bottom: none;
+    }
+
+    .form-row label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #333;
+    }
+
+    .form-row input[type="text"],
+    .form-row input[type="number"],
+    .form-row select,
+    .form-row textarea {
+        width: 100%;
+        padding: 8px 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 4px;
+        font-size: 14px;
+        transition: all 0.3s;
+    }
+
+    .form-row input[type="file"] {
+        padding: 8px 0;
+    }
+
+    .profile-picture-preview {
+        margin-top: 10px;
+        max-width: 200px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .form-row input[type="text"]:focus,
+    .form-row input[type="number"]:focus,
+    .form-row select:focus,
+    .form-row textarea:focus {
+        border-color: #4CAF50;
+        box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        outline: none;
+    }
+
+    .submit-row {
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 4px;
+        margin-top: 20px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .submit-row input[type="submit"] {
+        background: #4CAF50;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .submit-row input[type="submit"]:hover {
+        background: #388E3C;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .submit-row input[type="submit"].default {
+        background: #2196F3;
+    }
+
+    .submit-row input[type="submit"].default:hover {
+        background: #1976D2;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    <form {% if has_file_field %}enctype="multipart/form-data" {% endif %}action="{{ form_url }}" method="post" id="{{ opts.model_name }}_form" novalidate>
+        {% csrf_token %}
+        {% block form_top %}{% endblock %}
+        
+        {% if errors %}
+            <div class="errornote">
+                {% if errors|length == 1 %}{% translate "Please correct the error below." %}{% else %}{% translate "Please correct the errors below." %}{% endif %}
+            </div>
+            {{ adminform.form.non_field_errors }}
+        {% endif %}
+
+        <fieldset class="module aligned">
+            {% for fieldset in adminform %}
+                {% if fieldset.name %}<h2>{{ fieldset.name }}</h2>{% endif %}
+                {% for line in fieldset %}
+                    <div class="form-row{% if line.errors %} errors{% endif %}">
+                        {% for field in line %}
+                            <div class="field-box">
+                                {% if field.errors %}{{ field.errors }}{% endif %}
+                                {{ field.label_tag }}
+                                {{ field.field }}
+                                {% if field.field.name == 'profile_picture' and field.field.value %}
+                                    <img src="{{ field.field.value.url }}" alt="Profile Picture" class="profile-picture-preview">
+                                {% endif %}
+                                {% if field.field.help_text %}
+                                    <div class="help">{{ field.field.help_text|safe }}</div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </fieldset>
+
+        {% block after_field_sets %}{% endblock %}
+
+        {% block inline_field_sets %}
+            {% for inline_admin_formset in inline_admin_formsets %}
+                {% include inline_admin_formset.opts.template %}
+            {% endfor %}
+        {% endblock %}
+
+        {% block after_related_objects %}{% endblock %}
+
+        <div class="submit-row">
+            <input type="submit" value="{% if original %}Save changes{% else %}Add trainer{% endif %}" class="default" name="_save">
+            {% if original %}
+                <input type="submit" value="Save and continue editing" name="_continue">
+            {% endif %}
+            <input type="submit" value="Save and add another" name="_addanother">
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block admin_change_form_document_ready %}
+{{ block.super }}
+<script type="text/javascript" src="{% static 'admin/js/cancel.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const profilePictureInput = document.querySelector('input[type="file"]');
+    if (profilePictureInput) {
+        profilePictureInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    let preview = document.querySelector('.profile-picture-preview');
+                    if (!preview) {
+                        preview = document.createElement('img');
+                        preview.className = 'profile-picture-preview';
+                        profilePictureInput.parentNode.appendChild(preview);
+                    }
+                    preview.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

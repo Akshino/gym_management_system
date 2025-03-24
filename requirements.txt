@@ -1,0 +1,6 @@
+Django
+razorpay
+reportlab
+Pillow
+django-crispy-forms
+python-dotenv

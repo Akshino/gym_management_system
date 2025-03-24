@@ -1,0 +1,659 @@
+{% extends 'gym_app/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    /* Modern Color Scheme */
+    :root {
+        /* Main Gradients */
+        --gradient-main: linear-gradient(120deg, #000428 0%, #004e92 100%);
+        --gradient-card: linear-gradient(120deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+        --gradient-success: linear-gradient(120deg, #00cdac 0%, #02aab0 100%);
+        --gradient-warning: linear-gradient(120deg, #f7b733 0%, #fc4a1a 100%);
+        --gradient-info: linear-gradient(120deg, #0082c8 0%, #667db6 100%);
+        
+        /* Solid Colors */
+        --color-text: #ffffff;
+        --color-text-muted: rgba(255, 255, 255, 0.7);
+        --color-border: rgba(255, 255, 255, 0.1);
+        --color-shadow: rgba(0, 0, 0, 0.2);
+    }
+
+    /* Base Styles */
+    body {
+        background: var(--gradient-main);
+        color: var(--color-text);
+        min-height: 100vh;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .dashboard-container {
+        padding: 2rem;
+        animation: fadeIn 0.5s ease-out;
+    }
+
+    /* Glass Card Effect */
+    .glass-card {
+        background: var(--gradient-card);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--color-border);
+        border-radius: 20px;
+        box-shadow: 0 8px 32px var(--color-shadow);
+        transition: all 0.3s ease;
+    }
+
+    .glass-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px var(--color-shadow);
+    }
+
+    /* Welcome Section */
+    .welcome-section {
+        position: relative;
+        padding: 3rem;
+        margin-bottom: 2rem;
+        overflow: hidden;
+    }
+
+    .welcome-text {
+        position: relative;
+        z-index: 2;
+    }
+
+    .welcome-text h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        animation: slideInLeft 0.5s ease-out;
+    }
+
+    .welcome-text p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        animation: slideInLeft 0.7s ease-out;
+    }
+
+    /* Stats Cards */
+    .stats-card {
+        padding: 1.5rem;
+        text-align: center;
+        animation: fadeInUp 0.5s ease-out;
+    }
+
+    .stats-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        color: var(--color-text);
+        animation: pulse 2s infinite;
+    }
+
+    .stats-number {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        background: var(--gradient-success);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .stats-label {
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--color-text-muted);
+    }
+
+    /* Progress Section */
+    .progress-container {
+        position: relative;
+        padding: 2rem;
+        margin: 1rem 0;
+    }
+
+    .progress {
+        height: 1.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50px;
+        overflow: hidden;
+        margin: 1rem 0;
+    }
+
+    .progress-bar {
+        background: var(--gradient-success);
+        border-radius: 50px;
+        transition: width 1s ease;
+        animation: progressAnimation 1s ease-out;
+    }
+
+    /* Activity Timeline */
+    .timeline {
+        position: relative;
+        padding: 2rem 0;
+    }
+
+    .timeline-item {
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-left: 3px solid var(--color-border);
+        transition: all 0.3s ease;
+        animation: slideInRight 0.5s ease-out;
+    }
+
+    .timeline-item:hover {
+        border-left-color: #00cdac;
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    /* Buttons */
+    .btn-modern {
+        background: var(--gradient-success);
+        border: none;
+        border-radius: 50px;
+        padding: 0.8rem 2rem;
+        color: white;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-modern:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 205, 172, 0.4);
+    }
+
+    .btn-modern::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%);
+        transform: translateX(-100%);
+        transition: transform 0.5s ease;
+    }
+
+    .btn-modern:hover::after {
+        transform: translateX(100%);
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes slideInLeft {
+        from { transform: translateX(-50px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes slideInRight {
+        from { transform: translateX(50px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes fadeInUp {
+        from { transform: translateY(20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+
+    @keyframes progressAnimation {
+        from { width: 0; }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .dashboard-container {
+            padding: 1rem;
+        }
+
+        .welcome-section {
+            padding: 2rem;
+        }
+
+        .welcome-text h1 {
+            font-size: 2rem;
+        }
+
+        .stats-card {
+            margin-bottom: 1rem;
+        }
+    }
+
+    .attendance-card {
+        background: linear-gradient(135deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.1) 100%);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .attendance-marked {
+        padding: 2rem 1rem;
+    }
+
+    .success-animation {
+        font-size: 3rem;
+        color: var(--gradient-success);
+        animation: successPulse 2s infinite;
+    }
+
+    .attendance-btn {
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .attendance-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 205, 172, 0.4);
+    }
+
+    .attendance-btn .btn-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    @keyframes successPulse {
+        0% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.1); opacity: 0.8; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    .history-list {
+        max-height: 300px;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+    }
+
+    .history-item {
+        padding: 0.8rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .history-item:last-child {
+        border-bottom: none;
+    }
+
+    .history-item:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .time-badge, .amount-badge {
+        padding: 0.3rem 0.8rem;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .amount-badge {
+        background: var(--gradient-success);
+        color: white;
+    }
+
+    .btn-modern.btn-sm {
+        padding: 0.4rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    /* Custom Scrollbar */
+    .history-list::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .history-list::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .history-list::-webkit-scrollbar-thumb {
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+    }
+
+    .toast {
+        background: var(--gradient-success) !important;
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .toast.show {
+        animation: slideInRight 0.3s ease-out;
+    }
+    
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <div class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" id="successToast">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <span id="toastMessage"></span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Welcome Section -->
+    <div class="glass-card welcome-section">
+        <div class="welcome-text">
+            <h1>Welcome, {{ user.get_full_name }} 👋</h1>
+            <p>{{ active_enrollment.package.name }} ({{ active_enrollment.package.get_duration_display }})</p>
+        </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="glass-card stats-card">
+                <i class="fas fa-calendar-check stats-icon"></i>
+                <div class="stats-number">{{ days_attended }}</div>
+                <div class="stats-label">Days Attended</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="glass-card stats-card">
+                <i class="fas fa-chart-line stats-icon"></i>
+                <div class="stats-number">{{ progress_percentage }}%</div>
+                <div class="stats-label">Progress</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="glass-card stats-card">
+                <i class="fas fa-fire stats-icon"></i>
+                <div class="stats-number">{{ total_days }}</div>
+                <div class="stats-label">Total Days</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="glass-card stats-card">
+                <i class="fas fa-dumbbell stats-icon"></i>
+                <div class="stats-number">{{ active_enrollment.package.name }}</div>
+                <div class="stats-label">Current Package</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="row">
+        <!-- Left Column -->
+        <div class="col-md-4">
+            <!-- Profile Card -->
+            <div class="glass-card mb-4">
+                <div class="card-body">
+                    <h5 class="mb-4">Profile Details</h5>
+                    <div class="profile-info">
+                        <p><i class="fas fa-user me-2"></i>{{ user.get_full_name }}</p>
+                        <p><i class="fas fa-envelope me-2"></i>{{ user.email }}</p>
+                        <p><i class="fas fa-phone me-2"></i>{{ user.phone_number }}</p>
+                        <button class="btn-modern w-100" data-bs-toggle="modal" data-bs-target="#profileModal">
+                            <i class="fas fa-edit me-2"></i>Edit Profile
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attendance Card -->
+            <div class="glass-card attendance-card">
+                <div class="card-body text-center">
+                    <h5 class="mb-4">
+                        <i class="fas fa-calendar-check me-2"></i>
+                        Today's Attendance
+                    </h5>
+                    {% if today_attendance %}
+                        <div class="attendance-marked">
+                            <div class="success-animation">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <h4 class="mt-3 mb-2">Attendance Marked!</h4>
+                            <p class="text-muted mb-0">
+                                <i class="fas fa-clock me-1"></i>
+                                {{ today_attendance.time|time:"h:i A" }}
+                            </p>
+                        </div>
+                    {% else %}
+                        <div class="attendance-pending">
+                            <form method="post" action="{% url 'mark_attendance' %}" class="mt-3">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-modern attendance-btn">
+                                    <span class="btn-content">
+                                        <i class="fas fa-check-circle me-2"></i>
+                                        Mark Attendance
+                                    </span>
+                                </button>
+                            </form>
+                            <p class="text-muted mt-3 mb-0">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Mark your attendance for today
+                            </p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Column -->
+        <div class="col-md-4">
+            <!-- Progress Tracker -->
+            <div class="glass-card mb-4">
+                <div class="card-body">
+                    <h5 class="mb-4">Package Progress</h5>
+                    <div class="progress-container">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" 
+                                 style="width: {{ progress_percentage }}%"
+                                 aria-valuenow="{{ progress_percentage }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
+                                {{ progress_percentage }}%
+                            </div>
+                        </div>
+                        <div class="mt-3 text-center">
+                            <p class="mb-1">Days Completed: {{ days_attended }} / {{ total_days }}</p>
+                            <small class="text-muted">
+                                {{ active_enrollment.start_date|date:"M d, Y" }} - 
+                                {{ active_enrollment.end_date|date:"M d, Y" }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trainer Profile -->
+            <div class="glass-card">
+                <div class="card-body">
+                    <h5 class="mb-4">Your Trainer</h5>
+                    <div class="d-flex align-items-center">
+                        {% if trainer_profile.profile_picture %}
+                            <img src="{{ trainer_profile.profile_picture.url }}" alt="Trainer" 
+                                 class="rounded-circle me-3" style="width: 80px; height: 80px; object-fit: cover;">
+                        {% else %}
+                            <img src="{% static 'img/default-profile.png' %}" alt="Default Profile" 
+                                 class="rounded-circle me-3" style="width: 80px; height: 80px; object-fit: cover;">
+                        {% endif %}
+                        <div>
+                            <h6 class="mb-1">{{ trainer_profile.user.get_full_name }}</h6>
+                            <p class="mb-1"><i class="fas fa-dumbbell me-2"></i>{{ trainer_profile.specialization.name }}</p>
+                            <p class="mb-0"><i class="fas fa-star me-2"></i>{{ trainer_profile.experience }} years exp.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="col-md-4">
+            <!-- Attendance History Card -->
+            <div class="glass-card mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="mb-0">
+                            <i class="fas fa-history me-2"></i>
+                            Attendance History
+                        </h5>
+                        <a href="{% url 'download_attendance_pdf' %}" class="btn-modern btn-sm">
+                            <i class="fas fa-download me-1"></i> PDF
+                        </a>
+                    </div>
+                    <div class="history-list">
+                        {% for attendance in attendance_history|slice:":5" %}
+                        <div class="history-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-calendar-check text-success me-2"></i>
+                                    {{ attendance.date|date:"M d, Y" }}
+                                </div>
+                                <span class="time-badge">
+                                    {{ attendance.time|time:"h:i A" }}
+                                </span>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="text-center text-muted">
+                            <i class="fas fa-calendar-times fa-2x mb-2"></i>
+                            <p>No attendance records yet</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment History Card -->
+            <div class="glass-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="mb-0">
+                            <i class="fas fa-receipt me-2"></i>
+                            Payment History
+                        </h5>
+                        <a href="{% url 'download_payment_pdf' %}" class="btn-modern btn-sm">
+                            <i class="fas fa-download me-1"></i> PDF
+                        </a>
+                    </div>
+                    <div class="history-list">
+                        {% for payment in payment_history|slice:":5" %}
+                        <div class="history-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ payment.package.name }}</strong>
+                                    <div class="text-muted small">
+                                        {{ payment.payment_date|date:"M d, Y" }}
+                                    </div>
+                                </div>
+                                <span class="amount-badge">
+                                    ₹{{ payment.package.price }}
+                                </span>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="text-center text-muted">
+                            <i class="fas fa-receipt fa-2x mb-2"></i>
+                            <p>No payment records yet</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Profile Modal -->
+<div class="modal fade" id="profileModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-card">
+            {% include 'gym_app/profile_form.html' %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const statsCards = document.querySelectorAll('.stats-card');
+        statsCards.forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
+        });
+
+        // Profile form submission handling
+        const profileForm = document.getElementById('profileUpdateForm');
+        if (profileForm) {
+            profileForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Clear previous errors
+                document.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
+                document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+                
+                fetch(this.action, {
+                    method: 'POST',
+                    body: new FormData(this),
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Show success toast
+                        const toast = new bootstrap.Toast(document.getElementById('successToast'));
+                        document.getElementById('toastMessage').textContent = data.message;
+                        toast.show();
+                        
+                        // Close modal
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('profileModal'));
+                        modal.hide();
+                        
+                        // Update displayed information without page reload
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1000);
+                    } else {
+                        // Handle validation errors
+                        Object.keys(data.errors).forEach(field => {
+                            const input = document.getElementById('id_' + field);
+                            input.classList.add('is-invalid');
+                            const feedback = document.createElement('div');
+                            feedback.className = 'invalid-feedback d-block';
+                            feedback.textContent = data.errors[field][0];
+                            input.parentNode.appendChild(feedback);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    const toast = new bootstrap.Toast(document.getElementById('successToast'));
+                    document.getElementById('toastMessage').textContent = 'An error occurred. Please try again.';
+                    toast.show();
+                });
+            });
+        }
+    });
+</script>
+{% endblock %}

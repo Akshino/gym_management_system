@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to FitLife Gym</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background: linear-gradient(135deg, #167d37, #05d6ee);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 10px 10px 0 0;
+        }
+        .content {
+            background-color: #f9f9f9;
+            padding: 30px;
+            border-radius: 0 0 10px 10px;
+            border: 1px solid #eee;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+        .highlight {
+            color: #167d37;
+            font-weight: bold;
+        }
+        .contact-info {
+            background-color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Welcome to {{ gym_name }}!</h1>
+        </div>
+        <div class="content">
+            <p>Dear {{ user.first_name }},</p>
+            
+            <p>Welcome to the FitLife Gym family! We're thrilled to have you join us on your fitness journey. Your registration has been successfully completed.</p>
+            
+            <p>At FitLife Gym, we are committed to helping you achieve your fitness goals through:</p>
+            <ul>
+                <li>State-of-the-art equipment</li>
+                <li>Expert trainers</li>
+                <li>Diverse range of fitness programs</li>
+                <li>Personalized training packages</li>
+            </ul>
+
+            <div class="contact-info">
+                <h3>Our Contact Information:</h3>
+                <p>📍 Address: {{ gym_address }}</p>
+                <p>📞 Phone: {{ gym_phone }}</p>
+                <p>✉️ Email: gymmangementsystem@gmail.com</p>
+            </div>
+
+            <p>Feel free to explore our various training packages and connect with our expert trainers to start your fitness journey!</p>
+
+            <p>Best regards,<br>
+            <span class="highlight">The FitLife Gym Team</span></p>
+        </div>
+        <div class="footer">
+            <p>This email was sent to {{ user.email }}. Please do not reply to this email.</p>
+        </div>
+    </div>
+</body>
+</html>

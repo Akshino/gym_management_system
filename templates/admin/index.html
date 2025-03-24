@@ -1,0 +1,421 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/dashboard.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<style>
+    /* Modal styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.4);
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 5% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 800px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .close:hover {
+        color: black;
+    }
+
+    .revenue-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    .revenue-table th, .revenue-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .revenue-table th {
+        background-color: #f8f9fc;
+    }
+
+    .revenue-table tr:hover {
+        background-color: #f5f5f5;
+    }
+
+    .stat-card.clickable {
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+
+    .stat-card.clickable:hover {
+        transform: translateY(-5px);
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .stat-card i {
+        font-size: 2rem;
+        color: #167d37;
+    }
+
+    .stat-content h3 {
+        margin: 0;
+        font-size: 0.9rem;
+        color: #666;
+    }
+
+    .stat-content p {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #167d37;
+    }
+
+    .charts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .chart-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+
+    .chart-card h3 {
+        margin: 0 0 1rem 0;
+        color: #333;
+        font-size: 1.2rem;
+    }
+
+    .chart-container {
+        position: relative;
+        height: 400px;
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    @media (min-width: 768px) {
+        .chart-container {
+            max-width: 800px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block coltype %}colMS{% endblock %}
+
+{% block bodyclass %}{{ block.super }} dashboard{% endblock %}
+
+{% block content %}
+<!-- Stats Overview -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <i class="fas fa-users"></i>
+        <div class="stat-content">
+            <h3>Total Members</h3>
+            <p>{{ total_members }}</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <i class="fas fa-user-tie"></i>
+        <div class="stat-content">
+            <h3>Active Trainers</h3>
+            <p>{{ active_trainers }}</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <i class="fas fa-dumbbell"></i>
+        <div class="stat-content">
+            <h3>Active Packages</h3>
+            <p>{{ total_packages }}</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <i class="fas fa-clipboard-check"></i>
+        <div class="stat-content">
+            <h3>Active Enrollments</h3>
+            <p>{{ total_enrollments }}</p>
+        </div>
+    </div>
+    <div class="stat-card clickable" id="revenueCard">
+        <i class="fas fa-rupee-sign"></i>
+        <div class="stat-content">
+            <h3>Total Revenue</h3>
+            <p>₹{{ total_revenue }}</p>
+        </div>
+    </div>
+</div>
+
+<!-- Revenue Details Modal -->
+<div id="revenueModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Revenue Details</h2>
+        <table class="revenue-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Member</th>
+                    <th>Package</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody id="revenueTableBody">
+                <!-- Revenue data will be populated here -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Charts -->
+<div class="charts-grid">
+    <!-- Monthly Enrollments Line Chart -->
+    <div class="chart-card">
+        <h3>Monthly Enrollment Trends</h3>
+        <div class="chart-container">
+            <canvas id="enrollmentChart"></canvas>
+        </div>
+    </div>
+    
+    <!-- Package Distribution Pie Chart -->
+    <div class="chart-card">
+        <h3>Package Distribution (Active Enrollments)</h3>
+        <div class="chart-container" style="height: 400px;">
+            <canvas id="packageChart"></canvas>
+        </div>
+        <!-- Debug info -->
+        <div style="display: none;">
+            <pre>{{ package_enrollment_data|safe }}</pre>
+        </div>
+    </div>
+</div>
+
+<script>
+window.addEventListener('load', function() {
+    try {
+        // Monthly Enrollments Line Chart
+        const monthlyData = {{ monthly_enrollment_data|safe }};
+        const months = monthlyData.map(item => {
+            const date = new Date(item.month);
+            return date.toLocaleString('default', { month: 'short', year: 'numeric' });
+        });
+
+        const enrollmentCtx = document.getElementById('enrollmentChart');
+        if (enrollmentCtx) {
+            new Chart(enrollmentCtx, {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: 'Total Enrollments',
+                        data: monthlyData.map(item => item.total),
+                        borderColor: '#167d37',
+                        backgroundColor: 'rgba(22, 125, 55, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: 'Approved',
+                        data: monthlyData.map(item => item.approved),
+                        borderColor: '#05d6ee',
+                        backgroundColor: 'transparent',
+                        tension: 0.4,
+                        borderDash: [5, 5]
+                    }, {
+                        label: 'Pending',
+                        data: monthlyData.map(item => item.pending),
+                        borderColor: '#f6c23e',
+                        backgroundColor: 'transparent',
+                        tension: 0.4,
+                        borderDash: [5, 5]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Package Distribution Pie Chart
+        const packageCtx = document.getElementById('packageChart');
+        if (packageCtx) {
+            // Get package data
+            const rawData = {{ package_enrollment_data|safe }};
+            console.log('Raw Package Data:', rawData);
+
+            if (rawData && rawData.length > 0) {
+                // Extract names and counts
+                const packageNames = rawData.map(item => item.package__name);
+                const packageCounts = rawData.map(item => item.count);
+                const totalEnrollments = packageCounts.reduce((a, b) => a + b, 0);
+
+                // Create pie chart
+                new Chart(packageCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: packageNames,
+                        datasets: [{
+                            data: packageCounts,
+                            backgroundColor: [
+                                '#167d37',
+                                '#05d6ee',
+                                '#f6c23e',
+                                '#e74a3b',
+                                '#36b9cc',
+                                '#858796'
+                            ],
+                            borderWidth: 1,
+                            borderColor: '#ffffff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '60%',
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: {
+                                    padding: 20,
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const value = context.raw;
+                                        const percentage = ((value / totalEnrollments) * 100).toFixed(1);
+                                        return `${context.label}: ${value} (${percentage}%)`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            } else {
+                // If no data, display a message
+                const ctx = packageCtx.getContext('2d');
+                ctx.font = '14px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#666';
+                ctx.fillText('No active enrollments found', packageCtx.width / 2, packageCtx.height / 2);
+            }
+        }
+    } catch (error) {
+        console.error('Error initializing charts:', error);
+        console.error('Error details:', error.message);
+        // Display error in the chart area
+        const packageCtx = document.getElementById('packageChart');
+        if (packageCtx) {
+            const ctx = packageCtx.getContext('2d');
+            ctx.font = '14px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#666';
+            ctx.fillText('Error loading chart', packageCtx.width / 2, packageCtx.height / 2);
+        }
+    }
+});
+
+// Revenue Modal Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const revenueCard = document.getElementById('revenueCard');
+    const revenueModal = document.getElementById('revenueModal');
+    const closeBtn = revenueModal.querySelector('.close');
+
+    revenueCard.addEventListener('click', function() {
+        // Fetch revenue details from the server
+        fetch('{% url "admin:revenue_details" %}')
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.getElementById('revenueTableBody');
+                tableBody.innerHTML = '';
+                
+                data.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${new Date(item.date).toLocaleDateString()}</td>
+                        <td>${item.member}</td>
+                        <td>${item.package}</td>
+                        <td>₹${item.amount}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+                
+                revenueModal.style.display = 'block';
+            })
+            .catch(error => console.error('Error fetching revenue details:', error));
+    });
+
+    closeBtn.addEventListener('click', function() {
+        revenueModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', function(event) {
+        if (event.target == revenueModal) {
+            revenueModal.style.display = 'none';
+        }
+    });
+});
+</script>
+{% endblock %}
+
+{% block sidebar %}{% endblock %}

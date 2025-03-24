@@ -1,0 +1,588 @@
+{% extends 'gym_app/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="hero-section">
+    <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div class="slide-content" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{% static 'gym_app/images/slider/slider1.jpg' %}')">
+                    <div class="container text-center">
+                        <h1 class="display-3 text-white mb-4 fade-in">Welcome to Fitlife</h1>
+                        <p class="lead text-white mb-5 fade-in-delay-1">Transform your life with our world-class fitness facilities</p>
+                        {% if not user.is_authenticated %}
+                            <a href="{% url 'user_register' %}" class="btn btn-join-now btn-lg fade-in-delay-2">Join Now</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="slide-content" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{% static 'gym_app/images/slider/slider2.jpg' %}')">
+                    <div class="container text-center">
+                        <h1 class="display-3 text-white mb-4 fade-in">Expert Trainers</h1>
+                        <p class="lead text-white mb-5 fade-in-delay-1">Get personalized guidance from certified professionals</p>
+                        {% if not user.is_authenticated %}
+                            <a href="{% url 'user_register' %}" class="btn btn-join-now btn-lg fade-in-delay-2">Start Training</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="slide-content" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{% static 'gym_app/images/slider/slider3.jpeg' %}')">
+                    <div class="container text-center">
+                        <h1 class="display-3 text-white mb-4 fade-in">Modern Equipment</h1>
+                        <p class="lead text-white mb-5 fade-in-delay-1">Train with state-of-the-art fitness equipment</p>
+                        {% if not user.is_authenticated %}
+                            <a href="{% url 'user_register' %}" class="btn btn-join-now btn-lg fade-in-delay-2">Explore Now</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="section-separator"></div>
+<div class="features-section">
+    <div class="container">
+        <h2 class="text-center mb-5 section-title">Explore Our Features</h2>
+        <div class="row g-4">
+            <!-- Specializations Card -->
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-image">
+                        <img src="{% static 'gym_app/images/features/specialization.jpg' %}" alt="Specializations">
+                        <div class="feature-overlay">
+                            <p class="description">Discover our diverse range of fitness specializations</p>
+                        </div>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Specializations</h3>
+                        <a href="#" class="feature-btn" data-bs-toggle="modal" data-bs-target="#specializationsModal">Know More</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trainers Card -->
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-image">
+                        <img src="{% static 'gym_app/images/features/trainers.jpg' %}" alt="Expert Trainers">
+                        <div class="feature-overlay">
+                            <p class="description">Meet our certified professional trainers</p>
+                        </div>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Expert Trainers</h3>
+                        
+                        <a href="#" class="feature-btn" data-bs-toggle="modal" data-bs-target="#trainersModal">Know More</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Packages Card -->
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-image">
+                        <img src="{% static 'gym_app/images/features/packages.jpg' %}" alt="Training Packages">
+                        <div class="feature-overlay">
+                            <p class="description">Explore our customized training packages</p>
+                        </div>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Training Packages</h3>
+                        <a href="#" class="feature-btn" data-bs-toggle="modal" data-bs-target="#packagesModal">Know More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Specializations Modal -->
+<div class="modal fade" id="specializationsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Our Specializations</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-4">
+                    {% for specialization in specializations %}
+                    <div class="col-md-6">
+                        <div class="specialization-item">
+                            <h4>{{ specialization.name }}</h4>
+                            <p>{{ specialization.description|default:"" }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Trainers Modal -->
+<div class="modal fade" id="trainersModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Our Expert Trainers</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-4">
+                    {% for trainer in trainers %}
+                    <div class="col-md-6">
+                        <div class="trainer-item">
+                            {% if trainer.profile_picture %}
+                            <img src="{{ trainer.profile_picture.url }}" alt="{{ trainer.user.get_full_name }}" class="trainer-img">
+                            {% else %}
+                            <div class="trainer-placeholder">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            {% endif %}
+                            <h4>{{ trainer.user.get_full_name }}</h4>
+                            <p class="specialization">{{ trainer.specialization.name }}</p>
+                            <p class="experience">{{ trainer.experience }} years experience</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Packages Modal -->
+<div class="modal fade" id="packagesModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Training Packages</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-4">
+                    {% for package in packages %}
+                    <div class="col-md-6">
+                        <div class="package-item">
+                            <h4>{{ package.name }}</h4>
+                            <p class="duration">{{ package.get_duration_display }}</p>
+                            <p class="price">₹{{ package.price }}</p>
+                            <p class="trainer">Trainer: {{ package.trainer.user.get_full_name }}</p>
+                            <div class="features">
+                                {% for feature in package.features.split|slice:":3" %}
+                                <p><i class="fas fa-check"></i> {{ feature }}</p>
+                                {% endfor %}
+                            </div>
+                            {% if not user.is_authenticated %}
+                            <a href="{% url 'user_register' %}" class="btn btn-primary">Register to Enroll</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hero-section {
+        height: 80vh;
+        min-height: 400px;
+        margin-bottom: 0;
+        padding: 20px 40px;
+        width: 95vw;
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .carousel {
+        height: 100%;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .carousel-inner {
+        height: 100%;
+    }
+
+    .carousel-item {
+        height: 100%;
+    }
+
+    .slide-content {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-size: cover;
+        background-position: center;
+        border-radius: 20px;
+        padding: 20px;
+    }
+
+    .carousel .container {
+        max-width: 900px;
+        padding: 0 20px;
+    }
+
+    .display-3 {
+        font-size: 2.8rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .lead {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    }
+
+    .btn-join-now {
+        padding: 12px 30px;
+        font-size: 1.1rem;
+        border-radius: 30px;
+        background-color: var(--secondary-bg);
+        border: none;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .btn-join-now:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        background-color: #e69d45;
+    }
+
+    .section-separator {
+        height: 80px;
+        background-color: var(--secondary-bg);
+        margin: 0;
+        padding: 0;
+    }
+
+    .features-section {
+        margin-top: 0;
+        padding-top: 30px;
+        padding-bottom: 30px;
+        background-color: #000000;
+        width: 100vw;
+        position: relative;
+        left: 50%;
+        right: 50%;
+        margin-left: -50vw;
+        margin-right: -50vw;
+    }
+
+    .features-section .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .section-title {
+        color: #ffffff;
+        position: relative;
+        padding-bottom: 15px;
+        margin-bottom: 50px;
+    }
+
+    .section-title:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 3px;
+        background-color: #ff9800;
+    }
+
+    .feature-card {
+        background: #1a1a1a;
+        border-radius: 10px;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+        height: 100%;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    .feature-card:hover {
+        transform: translateY(-10px);
+    }
+
+    .feature-image {
+        position: relative;
+        height: 250px;
+        overflow: hidden;
+    }
+
+    .feature-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .feature-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .feature-card:hover .feature-overlay {
+        opacity: 1;
+    }
+
+    .feature-overlay .description {
+        color: #ffffff;
+        margin: 0;
+        font-size: 1.1rem;
+        transform: translateY(20px);
+        transition: transform 0.3s ease;
+    }
+
+    .feature-card:hover .feature-overlay .description {
+        transform: translateY(0);
+    }
+
+    .feature-content {
+        padding: 20px;
+        text-align: center;
+    }
+
+    .feature-content h3 {
+        color: #ffffff;
+        margin-bottom: 15px;
+        font-size: 1.5rem;
+    }
+
+    .feature-btn {
+        display: inline-block;
+        padding: 10px 25px;
+        background-color: #ff9800;
+        color: #ffffff;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    .feature-btn:hover {
+        background-color: #f57c00;
+        color: #ffffff;
+    }
+
+    .carousel,
+    .carousel-inner,
+    .carousel-item,
+    .slide-content {
+        height: 100%;
+    }
+
+    .slide-content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        transition: all 0.3s ease;
+    }
+
+    /* Fade in animations for text */
+    .fade-in {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 0.5s ease forwards;
+    }
+
+    .fade-in-delay-1 {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 0.5s ease 0.2s forwards;
+    }
+
+    .fade-in-delay-2 {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 0.5s ease 0.4s forwards;
+    }
+
+    @keyframes fadeInUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Enhanced carousel controls */
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 5%;
+        opacity: 0;
+        transition: all 0.3s ease;
+    }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        width: 3rem;
+        height: 3rem;
+        background-color: rgba(0, 0, 0, 0.5);
+        border-radius: 50%;
+        background-size: 50%;
+    }
+
+    .hero-section:hover .carousel-control-prev,
+    .hero-section:hover .carousel-control-next {
+        opacity: 1;
+    }
+
+    /* Enhanced indicators */
+    .carousel-indicators {
+        bottom: 30px;
+    }
+
+    .carousel-indicators button {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin: 0 6px;
+        background-color: rgba(255, 255, 255, 0.5);
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+    }
+
+    .carousel-indicators button.active {
+        background-color: #fff;
+        transform: scale(1.2);
+    }
+
+    @media (max-width: 768px) {
+        .hero-section {
+            min-height: 500px;
+        }
+
+        .display-3 {
+            font-size: 2.5rem;
+        }
+
+        .lead {
+            font-size: 1.2rem;
+        }
+
+        .btn-join-now {
+            padding: 12px 30px;
+            font-size: 1.2rem;
+        }
+
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            width: 2rem;
+            height: 2rem;
+        }
+    }
+
+    /* Modal Styles */
+    .modal-content {
+        background-color: #1a1a1a;
+        border: none;
+        border-radius: 15px;
+    }
+
+    .modal-header {
+        border-bottom: 1px solid #333;
+        padding: 20px;
+        background-color: var(--primary-bg);
+        border-radius: 15px 15px 0 0;
+    }
+
+    .modal-title {
+        color: var(--primary-white);
+        font-weight: 600;
+        font-size: 1.5rem;
+    }
+
+    .modal-body {
+        padding: 30px;
+        background-color: var(--secondary-bg);
+    }
+
+    .trainer-item {
+        background: #ffffff;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+
+    .trainer-item img {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 15px;
+        border: 3px solid var(--primary-bg);
+    }
+
+    .trainer-item h4 {
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+
+    .trainer-item .specialization {
+        color: var(--primary-bg);
+        font-weight: 500;
+        margin-bottom: 5px;
+    }
+
+    .trainer-item .experience {
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .btn-close {
+        background-color: var(--secondary-bg);
+        opacity: 1;
+        padding: 10px;
+    }
+
+    .btn-close:hover {
+        background-color: #e0e0e0;
+    }
+</style>
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}
+{% endblock %}
